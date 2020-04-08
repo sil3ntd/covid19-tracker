@@ -46,11 +46,11 @@ main(int argc, char *argv[])
 		/* To see the detailed information saved in the data array
 		 * uncomment the lines starting from the for-statement  up to
 		 * the return-statement. */
-		/*		
+		/*			
 		for(j = 0; j < i; ++j)
 			printf("data[%d]: %s\n", j, data[j]);
 		return 0;
-		*/	
+		*/
 
 		p = pretty_print(data, count+1);	
 		
@@ -132,12 +132,18 @@ int get_data_per_country(char str[], int max)
 }
 int pretty_print(char *s[], int item)
 {
+	char *Id;
+
+	Id = strtok(s[3], ":");
+	Id = strtok(NULL, ":");
 	/* Skips printing data for countries whose name has a character
 	 * which cannot be represented by the char data type. Solution is
 	 * part of todo.*/
-	if(item == 92 || item == 95 || item == 171)	
+	
+	if(!strcmp(Id, "638")|| !strcmp(Id, "384") || !strcmp(Id, "531"))
 		return 0;
 	
+
 	printf("|%1c%4d%1c|", 0x20, item, 0x20); 
 	printf("%2c%-32s|", 0x20, strtok(s[1], "\""));
 	printf("%13d|", atoi(s[17]));
