@@ -95,13 +95,13 @@ main(int argc, char *argv[])
 	/* Print the  total */
 	printf("|%6c|", 0x20); 
 	printf("%14c%6s%14c|", 0x20, "World", 0x20);
-	printf("%13d|", cases_total);
-	printf("%15d|", cases_today);
-	printf("%14d|", deaths_total);
-	printf("%16d|", deaths_today);
-	printf("%17d|", recovered_total);
-	printf("%14d|", active_total);
-	printf("%16d|", critical_total);
+	printf("%12d%1c|", cases_total, 0x20);
+	printf("%14d%1c|", cases_today, 0x20);
+	printf("%13d%1c|", deaths_total, 0x20);
+	printf("%15d%1c|", deaths_today, 0x20);
+	printf("%16d%1c|", recovered_total, 0x20);
+	printf("%13d%1c|", active_total, 0x20);
+	printf("%15d%1c|", critical_total, 0x20);
 	printf("\n");
 	putchar(0x20);
 	for(i = 0; i < 153; i++)
@@ -171,13 +171,13 @@ int pretty_print(char *s[], int item)
 
 	printf("|%1c%4d%1c|", 0x20, item, 0x20); 
 	printf("%2c%-32s|", 0x20, strtok(s[1], "\""));
-	printf("%13d|", atoi(s[17]));
-	printf("%15d|", atoi(s[19]));
-	printf("%14d|", atoi(s[21]));
-	printf("%16d|", atoi(s[23]));
-	printf("%17d|", atoi(s[25]));
-	printf("%14d|", atoi(s[27]));
-	printf("%16d|", atoi(s[29]));
+	printf("%12d%1c|", atoi(s[17]), 0x20);
+	printf("%14d%1c|", atoi(s[19]), 0x20);
+	printf("%13d%1c|", atoi(s[21]), 0x20);
+	printf("%15d%1c|", atoi(s[23]), 0x20);
+	printf("%16d%1c|", atoi(s[25]), 0x20);
+	printf("%13d%1c|", atoi(s[27]), 0x20);
+	printf("%15d%1c|", atoi(s[29]), 0x20);
 
 	return 1;
 }
