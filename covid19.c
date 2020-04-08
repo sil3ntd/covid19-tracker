@@ -36,10 +36,6 @@ main(int argc, char *argv[])
 
 	i = 0;
 	while((len = get_data_per_country(str, MAXLEN)) > 0){
-		/*
-		printf("debug: count = %d, len = %d\n", count+1, len);
-		*/
-
 		/* write details per country to the data array */
 		t = strtok(str, ":");
 		data[i++] = t;
