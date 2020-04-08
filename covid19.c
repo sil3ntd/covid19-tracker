@@ -70,8 +70,9 @@ main(int argc, char *argv[])
 			;
 		else
 			printf("\n");
-		
-		/* To see the information per country in another form,
+
+		/* To see the information per country in another form, comment the
+		 * pretty_print statement above include the if-else statement and
 		 * uncomment the line starting from the print_details()
 		 * function call up to the printf statement. */
 		/*
@@ -157,13 +158,13 @@ int get_data_per_country(char str[], int max)
 }
 int pretty_print(char *s[], int item)
 {
-	char *Id;
+	char *Id;			/* country Id code */
 
 	Id = strtok(s[3], ":");
 	Id = strtok(NULL, ":");
 	/* Skips printing data for countries whose name has a character
 	 * which cannot be represented by the char data type. Solution is
-	 * part of todo. Uncomment the if statement to view all.*/
+	 * part of todo. Comment the if statement to view all.*/
 	
 	if(!strcmp(Id, "638") || !strcmp(Id, "384") || !strcmp(Id, "531"))
 		return 0;
