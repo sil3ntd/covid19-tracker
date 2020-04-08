@@ -18,6 +18,13 @@ main(int argc, char *argv[])
 	int j;
 	int count = 0;
 	int p;
+	int cases_total = 0;		/* Total cases */
+	int cases_today = 0;		/* Total cases for the day */
+	int deaths_total = 0;
+	int deaths_today = 0;		/* Total deaths for the day */
+	int recovered_total = 0;
+	int active_total = 0;
+	int critical_total = 0;
 
 	/* print header */
 	header();
@@ -41,7 +48,16 @@ main(int argc, char *argv[])
 			data[i++] = t;
 			t = strtok(NULL, ":");
 			data[i++] = t;
-		}	
+		}
+
+		/* Compute the totals */
+		cases_total += atoi(data[17]);
+		cases_today += atoi(data[19]);
+		deaths_total += atoi(data[21]);
+		deaths_today += atoi(data[23]);
+		recovered_total += atoi(data[25]);
+		active_total += atoi(data[27]);
+		critical_total += atoi(data[29]);
 	
 		/* To see the detailed information saved in the data array
 		 * uncomment the lines starting from the for-statement  up to
@@ -75,15 +91,28 @@ main(int argc, char *argv[])
 		++count;		/* Represents the number of countries */
 	}
 
-	/*
-	printf("\ndebug: Total country count: %d\n", count);
-	*/
-
-
 	putchar(0x20);
 	for(i = 0; i < 153; i++)
 		putchar('-');
 	printf("\n");
+
+	/* Print the  total */
+	printf("|%6c|", 0x20); 
+	printf("%14c%6s%14c|", 0x20, "World", 0x20);
+	printf("%13d|", cases_total);
+	printf("%15d|", cases_today);
+	printf("%14d|", deaths_total);
+	printf("%16d|", deaths_today);
+	printf("%17d|", recovered_total);
+	printf("%14d|", active_total);
+	printf("%16d|", critical_total);
+	printf("\n");
+	putchar(0x20);
+	for(i = 0; i < 153; i++)
+		putchar('-');
+	printf("\n");
+
+
 	return 0;
 }
 
@@ -138,9 +167,9 @@ int pretty_print(char *s[], int item)
 	Id = strtok(NULL, ":");
 	/* Skips printing data for countries whose name has a character
 	 * which cannot be represented by the char data type. Solution is
-	 * part of todo.*/
+	 * part of todo. Uncomment the if statement to view all.*/
 	
-	if(!strcmp(Id, "638")|| !strcmp(Id, "384") || !strcmp(Id, "531"))
+	if(!strcmp(Id, "638") || !strcmp(Id, "384") || !strcmp(Id, "531"))
 		return 0;
 	
 
