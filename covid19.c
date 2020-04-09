@@ -160,7 +160,7 @@ int pretty_print(char *s[], int item)
 {
 	char *Id;			/* country Id code */
 
-	Id = strtok(s[3], ":");
+	Id = strtok(s[5], ":");
 	Id = strtok(NULL, ":");
 	/* Skips printing data for countries whose name has a character
 	 * which cannot be represented by the char data type. Solution is
@@ -171,7 +171,7 @@ int pretty_print(char *s[], int item)
 	
 
 	printf("|%1c%4d%1c|", 0x20, item, 0x20); 
-	printf("%2c%-32s|", 0x20, strtok(s[1], "\""));
+	printf("%2c%-32s|", 0x20, strtok(s[3], "\""));
 	printf("%12d%1c|", atoi(s[17]), 0x20);
 	printf("%14d%1c|", atoi(s[19]), 0x20);
 	printf("%13d%1c|", atoi(s[21]), 0x20);
@@ -185,18 +185,19 @@ int pretty_print(char *s[], int item)
 
 void print_details(char *s[])
 {
-	char *t;
+	char *t, *Id;
 
-	printf("Country: %s\n", strtok(s[1], "\""));
+	printf("Country: %s\n", strtok(s[3], "\""));
 	printf("Country Info:\n"); 
 	t = strtok(s[41], "\"");
 	printf("\tCountry code: %s\n", (strcmp(t, "}") ? t : "null"));
-	strtok(s[3], ":");
-	printf("\tId: %s\n", strtok(NULL, ":"));
-	printf("\tiso2: %s\n", strtok(s[5], "\""));
-	printf("\tiso3: %s\n", strtok(s[7], "\""));
-	printf("\tlatitude: %d degrees\n", atoi(s[9]));
-	printf("\tlongitude: %d degrees\n", atoi(s[11]));
+	Id = strtok(s[3], ":");
+	Id = strtok(NULL, ":");
+	printf("\tId: %s\n", Id);
+	printf("\tiso2: %s\n", strtok(s[7], "\""));
+	printf("\tiso3: %s\n", strtok(s[9], "\""));
+	printf("\tlatitude: %d degrees\n", atoi(s[11]));
+	printf("\tlongitude: %d degrees\n", atoi(s[13]));
 	printf("Total Cases: %d\n", atoi(s[17]));
 	printf("Today's cases: %d\n", atoi(s[19]));
 	printf("Total Deaths: %d\n", atoi(s[21]));
