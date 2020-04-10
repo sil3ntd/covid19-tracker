@@ -29,6 +29,8 @@ main(int argc, char *argv[])
 	/* print header */
 	header();
 
+	/* start capturing only after the data keyword.
+	 * Data are enclosed within [..]. */
 	while((c = getchar()) != '[')
 		;
 
@@ -138,13 +140,6 @@ void header()
 int get_data_per_country(char str[], int max)
 {
 	int i, c;
-
-	/* start capturing only after the data keyword.
-	 * Data are enclosed within [..]. */
-	/*
-	while((c = getchar()) != '[')
-		;
-	*/
 
 	i = 0;
 	while(i < max && (c = getchar()) != '}' && c != EOF){
