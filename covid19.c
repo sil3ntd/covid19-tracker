@@ -29,8 +29,6 @@ main(int argc, char *argv[])
 	/* print header */
 	header();
 
-	/* start capturing only after the data keyword.
-	 * Data are enclosed within [..]. */
 	while((c = getchar()) != '[')
 		;
 
@@ -141,6 +139,13 @@ int get_data_per_country(char str[], int max)
 {
 	int i, c;
 
+	/* start capturing only after the data keyword.
+	 * Data are enclosed within [..]. */
+	/*
+	while((c = getchar()) != '[')
+		;
+	*/
+
 	i = 0;
 	while(i < max && (c = getchar()) != '}' && c != EOF){
 		if(c == ']') /* test for end of data indicator */
@@ -185,16 +190,16 @@ int pretty_print(char *s[], int item)
 
 void print_details(char *s[])
 {
-	char *t, *Id;
+	char *t;
 
 	printf("Country: %s\n", strtok(s[3], "\""));
 	printf("Country Info:\n"); 
-	t = strtok(s[41], "\"");
-	printf("\tCountry code: %s\n", (strcmp(t, "}") ? t : "null"));
-	Id = strtok(s[3], ":");
-	Id = strtok(NULL, ":");
-	printf("\tId: %s\n", Id);
-	printf("\tiso2: %s\n", strtok(s[7], "\""));
+	t = strtok(s[7], "\"");
+	printf("\tCountry code: %s\n", strcmp(t, "}") ? t : "null");
+	t = strtok(s[5], ":");
+	printf("\tId: %s\n", strtok(NULL, ":"));
+	t = strtok(s[7], ":");
+	printf("\tiso2: %s\n", strcmp(t, "}") ? t : "null");
 	printf("\tiso3: %s\n", strtok(s[9], "\""));
 	printf("\tlatitude: %d degrees\n", atoi(s[11]));
 	printf("\tlongitude: %d degrees\n", atoi(s[13]));
@@ -203,7 +208,6 @@ void print_details(char *s[])
 	printf("Total Deaths: %d\n", atoi(s[21]));
 	printf("Today's deaths: %d\n", atoi(s[23]));
 	printf("Total recovered: %d\n", atoi(s[25]));
-	printf("Total confirmed: %d\n", atoi(s[39]));
 	printf("Total tests: %d\n", atoi(s[35]));
 	printf("Total active: %d\n", atoi(s[27]));
 	printf("Total critical: %d\n", atoi(s[29]));
