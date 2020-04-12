@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 
 #define MAXLEN 1000
 
@@ -8,6 +9,7 @@ char str[MAXLEN];
 void header();
 void print_details(char *country[]);
 int pretty_print(char *country[], int item_num);
+void print_update_time(char *);
 
 main(int argc, char *argv[])
 {
@@ -36,7 +38,8 @@ main(int argc, char *argv[])
 
 	i = 0;
 	while((len = get_data_per_country(str, MAXLEN)) > 0){
-		/* write details per country to the data array */
+		/* Separate the data into tokens and write each token to the
+		 * data array */
 		t = strtok(str, ":");
 		data[i++] = t;
 		while(t != NULL){
@@ -108,6 +111,9 @@ main(int argc, char *argv[])
 	for(i = 0; i < 153; i++)
 		putchar('-');
 	printf("\n");
+
+	/* Print the last update time */
+	print_update_time(data[1]);
 
 
 	return 0;
@@ -208,3 +214,23 @@ void print_details(char *s[])
 	printf("Total critical: %d\n", atoi(s[29]));
 }
 
+
+#include <time.h>
+
+void print_update_time(char *s)
+{
+	time_t update_time;
+	struct tm *pstr_update_time;
+	
+	/* calendar time in JSON is in milliseconds since Jan 1, 1970
+	 * while calendar time in C is in seconds since Jan 1, 1970 */
+	update_time = strtol(s, NULL, 10) / 1000; 	
+
+	pstr_update_time = gmtime(&update_time);
+
+	printf("\nLast updated on: ");
+	printf("(UTC) %s\n", asctime(pstr_update_time));
+
+	printf("\n");
+												   
+}
