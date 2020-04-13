@@ -4,22 +4,20 @@
 
 #define MAXLEN 1000
 
-char str[MAXLEN];
+char raw_data[MAXLEN];
 
+int get_raw_data(char *, int);
+void get_tokens(char *, char *[]);
 void header();
-void print_details(char *country[]);
 int pretty_print(char *country[], int item_num);
 void print_update_time(char *);
 
 main(int argc, char *argv[])
 {
 	char c; 
-	int i, len;
-	char *t;
-	char *data[100];
-	int j;
+	int i, len, p;
+	char *tokens[100];
 	int count = 0;
-	int p;
 	int cases_total = 0;		/* Total cases */
 	int cases_today = 0;		/* Total cases for the day */
 	int deaths_total = 0;
@@ -36,61 +34,32 @@ main(int argc, char *argv[])
 	while((c = getchar()) != '[')
 		;
 
-	i = 0;
-	while((len = get_data_per_country(str, MAXLEN)) > 0){
-		/* Separate the data into tokens and write each token to the
-		 * data array */
-		t = strtok(str, ":");
-		data[i++] = t;
-		while(t != NULL){
-			t = strtok(NULL, ",");
-			data[i++] = t;
-			t = strtok(NULL, ":");
-			data[i++] = t;
-		}
+	while((len = get_raw_data(raw_data, MAXLEN)) > 0){
+		/* separate the data into tokens */
+		get_tokens(raw_data, tokens);
 
 		/* Compute the totals */
-		cases_total += atoi(data[17]);
-		cases_today += atoi(data[19]);
-		deaths_total += atoi(data[21]);
-		deaths_today += atoi(data[23]);
-		recovered_total += atoi(data[25]);
-		active_total += atoi(data[27]);
-		critical_total += atoi(data[29]);
-	
-		/* To see the detailed information saved in the data array
-		 * uncomment the lines starting from the for-statement  up to
-		 * the return-statement. */
-		/*			
-		for(j = 0; j < i; ++j)
-			printf("data[%d]: %s\n", j, data[j]);
-		return 0;
-		*/
+			
+		cases_total += atoi(tokens[17]);
+		cases_today += atoi(tokens[19]);
+		deaths_total += atoi(tokens[21]);
+		deaths_today += atoi(tokens[23]);
+		recovered_total += atoi(tokens[25]);
+		active_total += atoi(tokens[27]);
+		critical_total += atoi(tokens[29]);
+			
 
-		p = pretty_print(data, count+1);	
+		/* Print the table */	
+		p = pretty_print(tokens, count+1);	
 		
 		if(!p)
 			;
 		else
 			printf("\n");
-
-		/* To see the information per country in another form, comment the
-		 * pretty_print statement above include the if-else statement and
-		 * uncomment the line starting from the print_details()
-		 * function call up to the printf statement. */
-		/*
-		print_details(data);
-		printf("\n");
-		*/
-
-
-		/* reinitialize index to 0 to save the information for
-		 * another country. */
-		i = 0;
-
-		++count;		/* Represents the number of countries */
+			
+		++count;				/* Number of countries */
 	}
-
+	
 	putchar(0x20);
 	for(i = 0; i < 153; i++)
 		putchar('-');
@@ -113,8 +82,9 @@ main(int argc, char *argv[])
 	printf("\n");
 
 	/* Print the last update time */
-	print_update_time(data[1]);
-
+	
+	print_update_time(tokens[1]);
+	
 
 	return 0;
 }
@@ -143,7 +113,8 @@ void header()
 	printf("\n");
 }
 
-int get_data_per_country(char str[], int max)
+/* get_raw_data: read each character from the and save to s */
+int get_raw_data(char s[], int max)
 {
 	int i, c;
 
@@ -151,17 +122,37 @@ int get_data_per_country(char str[], int max)
 	while(i < max && (c = getchar()) != '}' && c != EOF){
 		if(c == ']') /* test for end of data indicator */
 			return -1;
-		str[i++] = c;
+		s[i++] = c;
 	}
-	str[i++] = c;
+	s[i++] = c;
 
 	while(i < max && (c = getchar()) != '}' && c != EOF)
-		str[i++] = c;
-	str[i++] = c;
-	str[i++] = '\0';
+		s[i++] = c;
+	s[i++] = c;
+	s[i++] = '\0';
 
 	return i;
 }
+
+/* get_tokens: separate the raw data in s into tokens and save
+ * each token (pointer to a char) to t */
+
+void get_tokens(char *s, char *t[])
+{
+	char *tok;
+	int i = 0;
+
+	i = 0;
+	tok = strtok(s, ":");
+	t[i++] = tok;
+	while(tok != NULL){
+		tok = strtok(NULL, ",");
+		t[i++] = tok;
+		tok = strtok(NULL, ":");
+		t[i++] = tok;
+	}
+}
+
 int pretty_print(char *s[], int item)
 {
 	char *Id;			/* country Id code */
@@ -188,32 +179,6 @@ int pretty_print(char *s[], int item)
 
 	return 1;
 }
-
-void print_details(char *s[])
-{
-	char *t;
-
-	printf("Country: %s\n", strtok(s[3], "\""));
-	printf("Country Info:\n"); 
-	t = strtok(s[7], "\"");
-	printf("\tCountry code: %s\n", strcmp(t, "}") ? t : "null");
-	t = strtok(s[5], ":");
-	printf("\tId: %s\n", strtok(NULL, ":"));
-	t = strtok(s[7], ":");
-	printf("\tiso2: %s\n", strcmp(t, "}") ? t : "null");
-	printf("\tiso3: %s\n", strtok(s[9], "\""));
-	printf("\tlatitude: %d degrees\n", atoi(s[11]));
-	printf("\tlongitude: %d degrees\n", atoi(s[13]));
-	printf("Total Cases: %d\n", atoi(s[17]));
-	printf("Today's cases: %d\n", atoi(s[19]));
-	printf("Total Deaths: %d\n", atoi(s[21]));
-	printf("Today's deaths: %d\n", atoi(s[23]));
-	printf("Total recovered: %d\n", atoi(s[25]));
-	printf("Total tests: %d\n", atoi(s[35]));
-	printf("Total active: %d\n", atoi(s[27]));
-	printf("Total critical: %d\n", atoi(s[29]));
-}
-
 
 #include <time.h>
 
