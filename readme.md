@@ -28,6 +28,8 @@ To view the options:
 The data.json file can be downloaded in json format via:
 
 	$ curl https://corona.lmao.ninja/v2/countries?sort=cases > data.json
+	or
+	$ curl https://corona.stats.online?format=json > data.json
 
 It is best to download first the data.json file before running the
 program to ensure that you have the latest information.

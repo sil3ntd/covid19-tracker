@@ -177,11 +177,16 @@ int get_data()
 		country[i].deaths_per_one_million = atoi(tokens[35]);
 		country[i].tests = atoi(tokens[37]);
 		country[i].tests_per_one_million = atoi(tokens[39]);
-		strcpy(country[i].continent, strtok(tokens[41],"\""));
+		/* Do not write to continent member for "Diamond Princess" and "MS
+		 * Zaandam" */
+		if(strcmp(country[i].name, "Diamond Princess") == 0 ||
+				strcmp(country[i].name, "MS Zaandam") == 0)
+			;
+		else
+			strcpy(country[i].continent, strtok(tokens[41],"\""));
 
 		i++;
 	}
-	
 	fclose(fp);
 	return i;
 }
@@ -222,7 +227,7 @@ void get_tokens(char s[], char *t[])
 
 	for(i = 0, tok = strtok(s, delim); tok != NULL; tok = strtok(NULL, delim))
 		t[i++] = tok;
-
+	
 	t[i] = tok;
 }
 
