@@ -1,6 +1,8 @@
 This is a very simple covid19 tracker.
 Displays a table of covid19 cases of a country or of the world.
 
+## Screenshot
+[!Preview][./screenshot.png]
 
 To compile:
 
