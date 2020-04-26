@@ -3,6 +3,7 @@ Displays a table of covid19 cases of a country or of the world.
 
 ## Screenshot
 ![Preview](./screenshot.png)
+![Preview](./screenshot2.png)
 
 To compile:
 
