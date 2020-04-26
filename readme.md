@@ -12,7 +12,9 @@ To view the table for the whole world:
 
 To view the table for a specific country:
 
-	% ./covid19 -c PH
+	% ./covid19 -c PH or
+	% ./covid19 -c Philippines or
+	% ./covid19 -c 608
 
 To view a list of country with country codes:
 
