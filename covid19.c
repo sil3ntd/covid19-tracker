@@ -2,7 +2,6 @@
 #include <string.h>
 #include <stdlib.h>
 
-void print_update_time(char *);
 void print_usage(char *);
 void print_world(int);
 void print_list(int);
@@ -115,8 +114,8 @@ void print_usage(char *s)
 	printf("\nOptions:\n");
 	printf("%3s, %-12s Print the table for a specific country\n", "-c",
 			"COUNTRY");
-	printf("%17c COUNTRY can be the whole name or country code e.g.\n", 0x20);
-	printf("%17c Philippines, PH, ..etc. ", 0x20);
+	printf("%17c COUNTRY can be the whole name or country code or its id e.g.\n", 0x20);
+	printf("%17c Philippines, PH, 608 ..etc. ", 0x20);
 	printf("Use -l to print country codes.\n", 0x20);
 	printf("%3s  %12c Print the table for the world\n", "-w", 0x20);
 	printf("%3s  %12c Print a list of country and country codes\n", "-l", 0x20);
@@ -386,5 +385,3 @@ void print_country(int id, int n)
 	print_update_time(country[0].updated);
 
 }
-
-
