@@ -114,8 +114,8 @@ void print_usage(char *s)
 	printf("\nOptions:\n");
 	printf("%3s, %-12s Print the table for a specific country\n", "-c",
 			"COUNTRY");
-	printf("%17c COUNTRY can be the whole name or country code or its id e.g.\n", 0x20);
-	printf("%17c Philippines, PH, 608 ..etc. ", 0x20);
+	printf("%17c COUNTRY can be the whole name or country code e.g.\n", 0x20);
+	printf("%17c Philippines, PH, ..etc. ", 0x20);
 	printf("Use -l to print country codes.\n", 0x20);
 	printf("%3s  %12c Print the table for the world\n", "-w", 0x20);
 	printf("%3s  %12c Print a list of country and country codes\n", "-l", 0x20);
@@ -231,11 +231,17 @@ void get_tokens(char s[], char *t[])
 void print_list(int n)
 {
 	int i;
+
+	printf("\nList of country codes, name, and id\n");
+	printf("Format is [id] \"country code\" \"name\"\n\n");
 	
 	for(i = 0; i < n; i++){
-		printf("[%3d] %3s ", atoi(country[i].info.id), country[i].info.iso2);
-		printf("%s\n", country[i].name);
+		printf("[%3d] %4s ", atoi(country[i].info.id), country[i].info.iso2);
+		printf("%-33s ", country[i].name, 0x20);
+		if((i+1)%4 == 0)
+			printf("\n");
 	}
+	printf("\n");
 }
 
 
@@ -261,18 +267,18 @@ void print_world(int n)
 		printf("|%1c%4d%1c|", 0x20, i+1, 0x20); 
 		printf("%2c%-32s|", 0x20, country[i].name);
 		printf("%12d%1c|", country[i].cases, 0x20);
-		printf("%14d%1c|", country[i].today_cases, 0x20);
+		printf("%10d%1c|", country[i].today_cases, 0x20);
 		printf("%13d%1c|", country[i].deaths, 0x20);
-		printf("%15d%1c|", country[i].today_deaths, 0x20);
-		printf("%16d%1c|", country[i].recovered, 0x20);
-		printf("%13d%1c|", country[i].active,0x20);
-		printf("%15d%1c|", country[i].critical, 0x20);
+		printf("%11d%1c|", country[i].today_deaths, 0x20);
+		printf("%10d%1c|", country[i].recovered, 0x20);
+		printf("%7d%1c|", country[i].active,0x20);
+		printf("%9d%1c|", country[i].critical, 0x20);
 
 		printf("\n");
 	}
 
 	putchar(0x20);
-	for(i = 0; i < 153; i++)
+	for(i = 0; i < 128; i++)
 		putchar('=');
 	printf("\n");
 
@@ -286,21 +292,21 @@ void print_header()
 	int i;
 	printf("\n");
 	putchar(0x20);
-	for(i = 0; i < 153; i++)
+	for(i = 0; i < 128; i++)
 		putchar('-');
 	printf("\n");
 	printf("|%1c%4s%1c|", 0x20, "Rank", 0x20);
 	printf("%13c%7s%14c|", 0x20, "Country", 0x20);
 	printf(" %-11s |", "Total Cases");
-	printf(" %-13s |", "Today's cases");
+	printf(" %-9s |", "New cases");
 	printf(" %-12s |", "Total Deaths");
-	printf(" %-14s |", "Today's Deaths");
-	printf(" %-15s |", "Total recovered");
-	printf(" %-12s |", "Total active");
-	printf(" %-14s |", "Total critical");
+	printf(" %-10s |", "New Deaths");
+	printf(" %-9s |", "Recovered");
+	printf(" %-6s |", "Active");
+	printf(" %-8s |", "Critical");
 	printf("\n");
 	putchar(0x20);
-	for(i = 0; i < 153; i++)
+	for(i = 0; i < 128; i++)
 		putchar('-');
 	printf("\n");
 }
@@ -325,15 +331,15 @@ void print_total(int n)
 	printf("|%6c|", 0x20); 
 	printf("%14c%6s%14c|", 0x20, "World", 0x20);
 	printf("%12d%1c|", cases_total, 0x20);
-	printf("%14d%1c|", cases_today, 0x20);
+	printf("%10d%1c|", cases_today, 0x20);
 	printf("%13d%1c|", deaths_total, 0x20);
-	printf("%15d%1c|", deaths_today, 0x20);
-	printf("%16d%1c|", recovered_total, 0x20);
-	printf("%13d%1c|", active_total, 0x20);
-	printf("%15d%1c|", critical_total, 0x20);
+	printf("%11d%1c|", deaths_today, 0x20);
+	printf("%10d%1c|", recovered_total, 0x20);
+	printf("%7d%1c|", active_total, 0x20);
+	printf("%9d%1c|", critical_total, 0x20);
 	printf("\n");
 	putchar(0x20);
-	for(i = 0; i < 153; i++)
+	for(i = 0; i < 128; i++)
 		putchar('-');
 	printf("\n");
 	
@@ -368,16 +374,16 @@ void print_country(int id, int n)
 	printf("|%1c%4d%1c|", 0x20, i+1, 0x20); 
 	printf("%2c%-32s|", 0x20, country[i].name);
 	printf("%12d%1c|", country[i].cases, 0x20);
-	printf("%14d%1c|", country[i].today_cases, 0x20);
+	printf("%10d%1c|", country[i].today_cases, 0x20);
 	printf("%13d%1c|", country[i].deaths, 0x20);
-	printf("%15d%1c|", country[i].today_deaths, 0x20);
-	printf("%16d%1c|", country[i].recovered, 0x20);
-	printf("%13d%1c|", country[i].active,0x20);
-	printf("%15d%1c|", country[i].critical, 0x20);
+	printf("%11d%1c|", country[i].today_deaths, 0x20);
+	printf("%10d%1c|", country[i].recovered, 0x20);
+	printf("%7d%1c|", country[i].active,0x20);
+	printf("%9d%1c|", country[i].critical, 0x20);
 	printf("\n");
 	
 	putchar(0x20);
-	for(i = 0; i < 153; i++)
+	for(i = 0; i < 128; i++)
 		putchar('=');
 	printf("\n");
 
@@ -385,3 +391,5 @@ void print_country(int id, int n)
 	print_update_time(country[0].updated);
 
 }
+
+
