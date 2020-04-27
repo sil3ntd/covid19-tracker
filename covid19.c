@@ -2,11 +2,14 @@
 #include <string.h>
 #include <stdlib.h>
 
-void print_usage(char *);
-void print_world(int);
-void print_list(int);
-void print_country(int, int);
+
 int get_data();
+void print_header();
+void print_country(int);
+void print_total(int);
+void print_update_time(char *s);
+void print_list(int);
+void print_usage(char *);
 
 struct Country{
 		char name[50];
@@ -35,10 +38,10 @@ struct Country{
 main(int argc, char *argv[])
 {
 	char c; 
-	int w_opt = 0, c_opt = 0, l_opt = 0, h_opt = 0;
+	int w_opt = 0, c_opt = 0, l_opt = 0, h_opt = 0, k_opt;
 	char *c_code, *prog_name = argv[0];
 	int total_country;
-	int i, found;
+	int i, found, id;
 
 	/* start collecting the data for each country */
 	total_country = get_data();	
@@ -60,6 +63,9 @@ main(int argc, char *argv[])
 			case 'h':
 				h_opt = 1;
 				break;
+			case 'k':
+				k_opt = 1;
+				break;
 			default:
 				printf("%s: invalid option -- '-%c'\n", prog_name, c);
 				printf("Try %s -h for help\n", prog_name);
@@ -68,20 +74,31 @@ main(int argc, char *argv[])
 	}
 
 	if(argc == 0){
-		if(w_opt)
-			print_world(total_country);
-		else if(l_opt)
+		if(w_opt){ /* print world */
+			print_header();
+			for(i = 0; i < total_country; i++){
+				/* Skips printing data for countries whose name has a character
+	 			* which cannot be represented by the char data type. Solution is
+	 			* part of todo. Comment the if statement to view all.*/
+				if((id = atoi(country[i].info.id)) == 638 || id == 384 || id == 531)
+					continue;
+				print_country(atoi(country[i].info.id));
+			}
+			for(i = 0; i < 128; i++)
+				putchar('=');
+			printf("\n");
+			print_total(total_country);
+			print_update_time(country[0].updated);
+		}else if(l_opt)
 			print_list(total_country);
 		else if(h_opt)
 			print_usage(prog_name);
-		else if(c_opt){
+		else if(c_opt || k_opt){
 			printf("%s: too few parameters for '-%c' option\n", prog_name, c);
 			printf("Try %s -h for help\n", prog_name);
 			return -1;
 		}else
 			print_usage(prog_name);
-
-		return 0;
 	}else{
 		if(c_opt){
 			c_code = *argv;
@@ -95,16 +112,48 @@ main(int argc, char *argv[])
 			if(!found){
 				printf("%s: country not found\n", prog_name);
 				return -1;
-			}else
-				print_country(atoi(country[i-1].info.id), total_country);
+			}else{
+				print_header();
+				print_country(atoi(country[i-1].info.id));
+				putchar(0x20);
+				for(i = 0; i < 128; i++)
+					putchar('=');
+				printf("\n");
+				print_total(total_country);
+				print_update_time(country[0].updated);
+			}
+		}else if(k_opt){
+			found = 0;
+			for(i = 0; !found && i < total_country; i++){
+				if(strcmp(*argv, country[i].continent) == 0)
+					found = 1;
+			}
+			if(!found){
+				printf("%s: continent not found\n", prog_name);
+				printf("Try %s -h for help\n", prog_name);
+				return -1;
+			}else{
+				print_header();
+				for(i = 0; i < total_country; i++)
+					if(strcmp(*argv, country[i].continent) == 0)
+						print_country(atoi(country[i].info.id));
+
+				putchar(0x20);
+				for(i = 0; i < 128; i++)
+					putchar('=');
+				printf("\n");
+				print_total(total_country);
+				print_update_time(country[0].updated);
+			}
 		}else{
 			printf("%s: too many parameters\n", prog_name);
 			printf("Try %s -h for help\n", prog_name);
 			return -1;
 		}
 		
-		return 0;
 	}
+
+	return 0;
 }
 
 void print_usage(char *s)
@@ -118,17 +167,16 @@ void print_usage(char *s)
 	printf("%17c Philippines, PH, ..etc. ", 0x20);
 	printf("Use -l to print country codes.\n", 0x20);
 	printf("%3s  %12c Print the table for the world\n", "-w", 0x20);
-	printf("%3s  %12c Print a list of country and country codes\n", "-l", 0x20);
-	printf("%17c List format. [id] [country code] [country name]\n", 0x20);
+	printf("%3s, %-12s Print the table for a continent. ", "-k", "CONTINENT");
+	printf("Use -l to see list of continents.\n");
+	printf("%3s  %12c Print a list of country\n", "-l", 0x20);
 	printf("%3s  %12c Prints this usage information.\n", "-h", 0x20);
 
 	printf("\n");
 			
 }
 
-
 /* get_data: collect the data from the data.json file. */
-
 #define MAXLEN 1000
 #define DATA_END 0
 #define ARR_FULL -1
@@ -142,6 +190,7 @@ int get_data()
 	char rawdata[MAXLEN], *tokens[50];
 	int ret, i;
 	char temp[10];
+	char *tok;
 
 	fp = fopen("data.json", "r");
 
@@ -231,67 +280,6 @@ void get_tokens(char s[], char *t[])
 	t[i] = tok;
 }
 
-
-/* print_list: print country list */
-void print_list(int n)
-{
-	int i;
-
-	printf("\nList of country codes, name, and id\n");
-	printf("Format is [id] \"country code\" \"name\"\n\n");
-	
-	for(i = 0; i < n; i++){
-		printf("[%3d] %4s ", atoi(country[i].info.id), country[i].info.iso2);
-		printf("%-33s ", country[i].name, 0x20);
-		if((i+1)%4 == 0)
-			printf("\n");
-	}
-	printf("\n");
-}
-
-
-/* print_world: print the table for all countries */
-
-void print_header();
-void print_total(int);
-void print_update_time(char *s);
-
-void print_world(int n)
-{
-	int i, id;
-	/* print header */
-	print_header();
-
-	for(i = 0; i < n; i++){
-		/* Skips printing data for countries whose name has a character
-	 	* which cannot be represented by the char data type. Solution is
-	 	* part of todo. Comment the if statement to view all.*/
-		if((id = atoi(country[i].info.id)) == 638 || id == 384 || id == 531)
-			continue;
-
-		printf("|%1c%4d%1c|", 0x20, i+1, 0x20); 
-		printf("%2c%-32s|", 0x20, country[i].name);
-		printf("%12d%1c|", country[i].cases, 0x20);
-		printf("%10d%1c|", country[i].today_cases, 0x20);
-		printf("%13d%1c|", country[i].deaths, 0x20);
-		printf("%11d%1c|", country[i].today_deaths, 0x20);
-		printf("%10d%1c|", country[i].recovered, 0x20);
-		printf("%7d%1c|", country[i].active,0x20);
-		printf("%9d%1c|", country[i].critical, 0x20);
-
-		printf("\n");
-	}
-
-	putchar(0x20);
-	for(i = 0; i < 128; i++)
-		putchar('=');
-	printf("\n");
-
-	print_total(n);
-	print_update_time(country[0].updated);
-
-}
-
 void print_header()
 {
 	int i;
@@ -314,6 +302,27 @@ void print_header()
 	for(i = 0; i < 128; i++)
 		putchar('-');
 	printf("\n");
+}
+
+void print_country(int id)
+{
+	int i;
+
+	for(i = 0; atoi(country[i].info.id) != id; i++) 
+		;
+
+	printf("|%1c%4d%1c|", 0x20, i+1, 0x20); 
+	printf("%2c%-32s|", 0x20, country[i].name);
+	printf("%12d%1c|", country[i].cases, 0x20);
+	printf("%10d%1c|", country[i].today_cases, 0x20);
+	printf("%13d%1c|", country[i].deaths, 0x20);
+	printf("%11d%1c|", country[i].today_deaths, 0x20);
+	printf("%10d%1c|", country[i].recovered, 0x20);
+	printf("%7d%1c|", country[i].active,0x20);
+	printf("%9d%1c|", country[i].critical, 0x20);
+	printf("\n");
+	
+	
 }
 
 void print_total(int n)
@@ -369,32 +378,20 @@ void print_update_time(char *s)
 												   
 }
 
-void print_country(int id, int n)
+/* print_list: print country list */
+void print_list(int n)
 {
 	int i;
+
+	printf("\nList of country. \nListed in the following format: ");
+	printf("[id] \"country code\" \"continent\" \"name\"\n\n");
 	
-	print_header();
-	for(i = 0; atoi(country[i].info.id) != id; i++) ;
-
-	printf("|%1c%4d%1c|", 0x20, i+1, 0x20); 
-	printf("%2c%-32s|", 0x20, country[i].name);
-	printf("%12d%1c|", country[i].cases, 0x20);
-	printf("%10d%1c|", country[i].today_cases, 0x20);
-	printf("%13d%1c|", country[i].deaths, 0x20);
-	printf("%11d%1c|", country[i].today_deaths, 0x20);
-	printf("%10d%1c|", country[i].recovered, 0x20);
-	printf("%7d%1c|", country[i].active,0x20);
-	printf("%9d%1c|", country[i].critical, 0x20);
+	for(i = 0; i < n; i++){
+		printf("[%3d]  %-4s ", atoi(country[i].info.id), country[i].info.iso2);
+		printf("%-19s ", country[i].continent);
+		printf("%-33s ", country[i].name, 0x20);
+		if((i+1)%2 == 0)
+			printf("\n");
+	}
 	printf("\n");
-	
-	putchar(0x20);
-	for(i = 0; i < 128; i++)
-		putchar('=');
-	printf("\n");
-
-	print_total(n);
-	print_update_time(country[0].updated);
-
 }
-
-
