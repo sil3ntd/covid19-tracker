@@ -35,7 +35,7 @@ struct Country{
 		char continent[20];
 } country[250];
 
-main(int argc, char *argv[])
+int main(int argc, char *argv[])
 {
 	char c; 
 	int w_opt = 0, c_opt = 0, l_opt = 0, h_opt = 0, k_opt;
@@ -165,7 +165,7 @@ void print_usage(char *s)
 			"COUNTRY");
 	printf("%17c COUNTRY can be the whole name or country code e.g.\n", 0x20);
 	printf("%17c Philippines, PH, ..etc. ", 0x20);
-	printf("Use -l to print country codes.\n", 0x20);
+	printf("Use -l to print country codes.\n");
 	printf("%3s  %12c Print the table for the world\n", "-w", 0x20);
 	printf("%3s, %-12s Print the table for a continent. ", "-k", "CONTINENT");
 	printf("Use -l to see list of continents.\n");
@@ -189,8 +189,6 @@ int get_data()
 {
 	char rawdata[MAXLEN], *tokens[50];
 	int ret, i;
-	char temp[10];
-	char *tok;
 
 	fp = fopen("data.json", "r");
 
@@ -232,7 +230,7 @@ int get_data()
 				strcmp(country[i].name, "MS Zaandam") == 0)
 			;
 		else
-			strcpy(country[i].continent, strtok(tokens[41],"\""));
+			strcpy(country[i].continent, strtok(tokens[43],"\""));
 
 		i++;
 	}
@@ -389,7 +387,7 @@ void print_list(int n)
 	for(i = 0; i < n; i++){
 		printf("[%3d]  %-4s ", atoi(country[i].info.id), country[i].info.iso2);
 		printf("%-19s ", country[i].continent);
-		printf("%-33s ", country[i].name, 0x20);
+		printf("%-33s ", country[i].name);
 		if((i+1)%2 == 0)
 			printf("\n");
 	}
