@@ -180,6 +180,8 @@ void print_usage(char *s)
 #define MAXLEN 1000
 #define DATA_END 0
 #define ARR_FULL -1
+#define TOK 60
+
 int get_raw(char [], int);
 void get_tokens(char [], char *[]);
 
@@ -187,7 +189,7 @@ FILE *fp;
 
 int get_data()
 {
-	char rawdata[MAXLEN], *tokens[50];
+	char rawdata[MAXLEN], *tokens[TOK];
 	int ret, i;
 
 	fp = fopen("data.json", "r");
