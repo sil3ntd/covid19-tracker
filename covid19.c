@@ -232,7 +232,7 @@ int get_data()
 				strcmp(country[i].name, "MS Zaandam") == 0)
 			;
 		else
-			strcpy(country[i].continent, strtok(tokens[43],"\""));
+			strcpy(country[i].continent, strtok(tokens[45],"\""));
 
 		i++;
 	}
