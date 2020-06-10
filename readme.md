@@ -47,5 +47,5 @@ https://github.com/sagarkarira/coronavirus-tracker-cli
 https://github.com/novelcovid/api
 
 **Note:**  
-As of May 29, 2020 the data structure from both sources has changed which makes
-the `-k` option not work properly. 
+~~As of May 29, 2020 the data structure from both sources has changed which makes
+the `-k` option not work properly.~~
