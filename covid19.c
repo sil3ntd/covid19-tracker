@@ -220,12 +220,12 @@ int get_data()
 		country[i].deaths = atoi(tokens[23]);
 		country[i].today_deaths = atoi(tokens[25]);
 		country[i].recovered = atoi(tokens[27]);
-		country[i].active = atoi(tokens[29]);
-		country[i].critical = atoi(tokens[31]);
-		country[i].cases_per_one_million = atoi(tokens[33]);
-		country[i].deaths_per_one_million = atoi(tokens[35]);
-		country[i].tests = atoi(tokens[37]);
-		country[i].tests_per_one_million = atoi(tokens[39]);
+		country[i].active = atoi(tokens[31]);
+		country[i].critical = atoi(tokens[33]);
+		country[i].cases_per_one_million = atoi(tokens[35]);
+		country[i].deaths_per_one_million = atoi(tokens[37]);
+		country[i].tests = atoi(tokens[39]);
+		country[i].tests_per_one_million = atoi(tokens[41]);
 		/* Do not write to continent member for "Diamond Princess" and "MS
 		 * Zaandam" */
 		if(strcmp(country[i].name, "Diamond Princess") == 0 ||
