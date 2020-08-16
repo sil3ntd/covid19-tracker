@@ -84,7 +84,8 @@ int main(int argc, char *argv[])
 					continue;
 				print_country(atoi(country[i].info.id));
 			}
-			for(i = 0; i < 128; i++)
+			putchar(0x20);
+			for(i = 0; i < 134; i++)
 				putchar('=');
 			printf("\n");
 			print_total(total_country);
