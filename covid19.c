@@ -10,6 +10,7 @@ void print_total(int);
 void print_update_time(char *s);
 void print_list(int);
 void print_usage(char *);
+double mortality_rate(double total_affected, double total_mor);
 
 struct Country{
 		char name[50];
@@ -85,7 +86,7 @@ int main(int argc, char *argv[])
 				print_country(atoi(country[i].info.id));
 			}
 			putchar(0x20);
-			for(i = 0; i < 134; i++)
+			for(i = 0; i < 148; i++)
 				putchar('=');
 			printf("\n");
 			print_total(total_country);
@@ -117,7 +118,7 @@ int main(int argc, char *argv[])
 				print_header();
 				print_country(atoi(country[i-1].info.id));
 				putchar(0x20);
-				for(i = 0; i < 134; i++)
+				for(i = 0; i < 148; i++)
 					putchar('=');
 				printf("\n");
 				print_total(total_country);
@@ -140,7 +141,7 @@ int main(int argc, char *argv[])
 						print_country(atoi(country[i].info.id));
 
 				putchar(0x20);
-				for(i = 0; i < 134; i++)
+				for(i = 0; i < 148; i++)
 					putchar('=');
 				printf("\n");
 				print_total(total_country);
@@ -286,7 +287,7 @@ void print_header()
 	int i;
 	printf("\n");
 	putchar(0x20);
-	for(i = 0; i < 134; i++)
+	for(i = 0; i < 148; i++)
 		putchar('-');
 	printf("\n");
 	printf("|%1c%4s%1c|", 0x20, "Rank", 0x20);
@@ -298,9 +299,10 @@ void print_header()
 	printf(" %11s |", "Recovered");
 	printf(" %11s |", "Active  ");
 	printf(" %-8s |", "Critical");
+        printf(" %-8s |", "% Mortality");
 	printf("\n");
 	putchar(0x20);
-	for(i = 0; i < 134; i++)
+	for(i = 0; i < 148; i++)
 		putchar('-');
 	printf("\n");
 }
@@ -326,6 +328,7 @@ void print_country(int id)
 	printf("%'12d%1c|", country[i].recovered, 0x20);
 	printf("%'12d%1c|", country[i].active,0x20);
 	printf("%'9d%1c|", country[i].critical, 0x20);
+        printf("%10f%3c|",mortality_rate((double)country[i].cases, (double)country[i].deaths), 0x20);
 	printf("\n");
 	
 	
@@ -359,9 +362,10 @@ void print_total(int n)
 	printf("%'12d%1c|", recovered_total, 0x20);
 	printf("%'12d%1c|", active_total, 0x20);
 	printf("%'9d%1c|", critical_total, 0x20);
+        printf("%10f%3c|", mortality_rate((double)cases_total, (double)deaths_total), 0x20);
 	printf("\n");
 	putchar(0x20);
-	for(i = 0; i < 134; i++)
+	for(i = 0; i < 148; i++)
 		putchar('-');
 	printf("\n");
 	
@@ -402,4 +406,9 @@ void print_list(int n)
 			printf("\n");
 	}
 	printf("\n");
+}
+
+double mortality_rate(double total_affected, double total_mor)
+{
+    return (total_mor / total_affected) * 100.0;
 }
